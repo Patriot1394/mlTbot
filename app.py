@@ -1,9 +1,10 @@
 # установим токен
 token = '449042193:AAG_rxZQdbcTot2NmL1rZJSUtcdHReoIgYs'
+mltoken = '71e484b2a67f4ad89768e455f71e9ce7'
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-
-updater = Updater(token)  # Токен API к Telegram
+import apiai, json
+updater = Updater(token) # Токен API к Telegram
 dispatcher = updater.dispatcher
 
 
@@ -13,8 +14,10 @@ def startCommand(bot, update):
 
 
 def textMessage(bot, update):
-    response = 'Получил Ваше сообщение: ' + update.message.text
-    bot.send_message(chat_id=update.message.chat_id, text=response)
+    request = apiai.ApiAI(mltoken).text_request() # Токен API к Dialogflow
+    request.lang = 'ru' # На каком языке будет послан запрос
+    request.session_id = 'BatlabAIBot' # ID Сессии диалога (нужно, чтобы потом учить бота)
+    request.query = update.message.text # Посылаем запрос к ИИ с сообщением от юзера
 
 
 # Хендлеры
